@@ -42,6 +42,8 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
             'plugins'     => ['namespace' => 'Plugin', 'path' => 'plugins'],
             'services'    => ['namespace' => 'Service', 'path' => 'services'],
             'controllers' => ['namespace' => 'Controller', 'path' => 'modules/default/controllers'],
+            'traits'      => ['namespace' => 'Trait', 'path' => 'traits'],
+            'helpers'     => ['namespace' => 'Helper', 'path' => 'helpers']
         ]);
     }
 
