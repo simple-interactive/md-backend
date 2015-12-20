@@ -53,6 +53,7 @@ class App_Service_Sync {
                 $product->description = $item ['description'];
                 $product->title = $item ['title'];
                 $product->price = $item ['price'];
+                $product->options = $item ['options'];
                 $product->weight = $item ['weight'];
                 $product->images = $item ['images'];
                 $product->exists = $item ['exists'];

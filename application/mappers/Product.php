@@ -12,6 +12,7 @@ class App_Map_Product extends Mongostar_Map_Instance
             'sectionId' => 'section',
             'title' => 'title',
             'description' => 'description',
+            'options' => 'options',
             'price' => 'price',
             'weight' => 'weight',
             'images' => 'images',

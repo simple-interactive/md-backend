@@ -8,6 +8,7 @@
  * @property string  $sectionId
  * @property string  $title
  * @property string  $description
+ * @property array   $options
  * @property float   $price
  * @property integer $weight
  * @property array   $images
