@@ -25,7 +25,7 @@ class Dispatcher_TableController extends Dispatcher_Controller_Base
             );
         }
         else {
-            throw new \Exception('method-unsupported');
+            throw new \Exception('method-unsupported', 400);
         }
     }
 }

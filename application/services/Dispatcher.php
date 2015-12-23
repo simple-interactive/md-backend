@@ -24,14 +24,14 @@ class App_Service_Dispatcher
         }
 
         if (mb_strlen($name, 'UTF-8') == 0 && mb_strlen($name, 'UTF-8') > 30) {
-            throw new \Exception('name-invalid');
+            throw new \Exception('name-invalid', 400);
         }
         if (mb_strlen($token, 'UTF-8') == 0 && mb_strlen($token, 'UTF-8') > 32) {
-            throw new \Exception('token-invalid');
+            throw new \Exception('token-invalid', 400);
         }
         if ($status != App_Model_Table::STATUS_WORK &&
             $status != App_Model_Table::STATUS_DISABLED) {
-            throw new \Exception('token-invalid');
+            throw new \Exception('token-invalid', 400);
         }
 
         $table->name = $name;
