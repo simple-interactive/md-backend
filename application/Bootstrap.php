@@ -19,6 +19,20 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
      */
     protected function _initAutoloader()
     {
+//        $modules = ['default', 'dispacher'];
+//        foreach ($modules as $module) {
+//            $moduleLoader = new Zend_Application_Module_Autoloader([
+//                'namespace' => 'Default',
+//                'basePath'  => APPLICATION_PATH.'/modules/'.$module
+//            ]);
+//            $moduleLoader->addResourceTypes([
+//                'controller' => [
+//                    'namespace' => 'Controller',
+//                    'path' => 'controllers'
+//                ]
+//            ]);
+//        }
+
         $moduleLoader = new Zend_Application_Module_Autoloader([
             'namespace' => 'Default',
             'basePath'  => APPLICATION_PATH.'/modules/default'
