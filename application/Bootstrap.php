@@ -19,31 +19,20 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
      */
     protected function _initAutoloader()
     {
-//        $modules = ['default', 'dispacher'];
-//        foreach ($modules as $module) {
-//            $moduleLoader = new Zend_Application_Module_Autoloader([
-//                'namespace' => 'Default',
-//                'basePath'  => APPLICATION_PATH.'/modules/'.$module
-//            ]);
-//            $moduleLoader->addResourceTypes([
-//                'controller' => [
-//                    'namespace' => 'Controller',
-//                    'path' => 'controllers'
-//                ]
-//            ]);
-//        }
+        $modules = ['default', 'dispatcher'];
 
-        $moduleLoader = new Zend_Application_Module_Autoloader([
-            'namespace' => 'Default',
-            'basePath'  => APPLICATION_PATH.'/modules/default'
-        ]);
-
-        $moduleLoader->addResourceTypes([
-            'controller' => [
-                'namespace' => 'Controller',
-                'path' => 'controllers'
-            ]
-        ]);
+        foreach ($modules as $module) {
+            $moduleLoader = new Zend_Application_Module_Autoloader([
+                'namespace' => ucfirst($module),
+                'basePath'  => APPLICATION_PATH.'/modules/'.$module
+            ]);
+            $moduleLoader->addResourceTypes([
+                'controller' => [
+                    'namespace' => 'Controller',
+                    'path' => 'controllers'
+                ]
+            ]);
+        }
 
         $appResources = new Zend_Loader_Autoloader_Resource([
             'basePath'  => APPLICATION_PATH,
@@ -55,7 +44,6 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
             'models'      => ['namespace' => 'Model', 'path' => 'models'],
             'plugins'     => ['namespace' => 'Plugin', 'path' => 'plugins'],
             'services'    => ['namespace' => 'Service', 'path' => 'services'],
-            'controllers' => ['namespace' => 'Controller', 'path' => 'modules/default/controllers'],
             'traits'      => ['namespace' => 'Trait', 'path' => 'traits'],
             'helpers'     => ['namespace' => 'Helper', 'path' => 'helpers']
         ]);

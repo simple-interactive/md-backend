@@ -23,10 +23,10 @@ class App_Service_Dispatcher
             $table = new App_Model_Table();
         }
 
-        if (mb_strlen($name, 'UTF-8') == 0 && b_strlen($name, 'UTF-8') > 30) {
+        if (mb_strlen($name, 'UTF-8') == 0 && mb_strlen($name, 'UTF-8') > 30) {
             throw new \Exception('name-invalid');
         }
-        if (mb_strlen($token, 'UTF-8') == 0 && b_strlen($token, 'UTF-8') > 32) {
+        if (mb_strlen($token, 'UTF-8') == 0 && mb_strlen($token, 'UTF-8') > 32) {
             throw new \Exception('token-invalid');
         }
         if ($status != App_Model_Table::STATUS_WORK &&
@@ -38,6 +38,7 @@ class App_Service_Dispatcher
         $table->token = $token;
         $table->status = $status;
         $table->save();
+
         return $table;
     }
 
@@ -65,7 +66,7 @@ class App_Service_Dispatcher
      *
      * @throws Zend_Exception
      */
-    public function checkToken ($token)
+    public function checkToken($token)
     {
         $config = Zend_Registry::get('config');
         return $config['dispatcher']['token'] === $token;

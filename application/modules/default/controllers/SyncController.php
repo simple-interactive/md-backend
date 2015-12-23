@@ -1,7 +1,7 @@
 <?php
 
-class SyncController extends Zend_Controller_Action {
-
+class SyncController extends Zend_Controller_Action
+{
     use App_Trait_SyncService;
 
     public function indexAction()
@@ -24,5 +24,4 @@ class SyncController extends Zend_Controller_Action {
         }
         $lock->unlock();
     }
-
 } 

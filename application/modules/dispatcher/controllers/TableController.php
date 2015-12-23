@@ -1,6 +1,6 @@
 <?php
 
-class TableController extends App_Controller_Dispatcher
+class Dispatcher_TableController extends Dispatcher_Controller_Base
 {
 
     public function indexAction()

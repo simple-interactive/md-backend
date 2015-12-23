@@ -3,13 +3,12 @@
 /**
  * @class ProductController
  */
-class ProductController extends Zend_Controller_Action {
-
+class ProductController extends Default_Controller_Base
+{
     use App_Trait_MenuService;
 
     public function indexAction()
     {
-
         if ($this->getRequest()->isGet()) {
             $this->view->product = App_Map_Product::execute(
                 $this->getMenuService()->getProduct($this->getParam('id', false))

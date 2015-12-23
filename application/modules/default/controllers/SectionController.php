@@ -1,6 +1,6 @@
 <?php
 
-class SectionController extends App_Controller_Base
+class SectionController extends Default_Controller_Base
 {
     use App_Trait_MenuService;
 
