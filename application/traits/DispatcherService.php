@@ -1,12 +1,12 @@
 <?php
 
 /**
- * @trait DispacherService
+ * @trait App_Trait_DispatcherService
  */
 trait App_Trait_DispatcherService
 {
     /**
-     * @var App_Trait_ispatcherService
+     * @var App_Trait_DispatcherService
      */
     private $_dispacherService;
 
