@@ -21,6 +21,7 @@ class App_Service_Dispatcher
         ]);
         if (!$table) {
             $table = new App_Model_Table();
+            $table->pair = App_Model_Table::PAIR_NO;
         }
 
         if (mb_strlen($name, 'UTF-8') == 0 && mb_strlen($name, 'UTF-8') > 30) {
@@ -29,9 +30,9 @@ class App_Service_Dispatcher
         if (mb_strlen($token, 'UTF-8') == 0 && mb_strlen($token, 'UTF-8') > 32) {
             throw new \Exception('token-invalid', 400);
         }
-        if ($status != App_Model_Table::STATUS_WORK &&
-            $status != App_Model_Table::STATUS_DISABLED) {
-            throw new \Exception('token-invalid', 400);
+        if ($status != App_Model_Table::STATUS_ACTIVE &&
+            $status != App_Model_Table::STATUS_LOCK) {
+            throw new \Exception('status-invalid', 400);
         }
 
         $table->name = $name;
@@ -70,5 +71,14 @@ class App_Service_Dispatcher
     {
         $config = Zend_Registry::get('config');
         return $config['dispatcher']['token'] === $token;
+    }
+
+    public function pairTable(App_Model_Table $table)
+    {
+        if ($table->pair == App_Model_Table::PAIR_YES) {
+            throw new \Exception('table-already-pair');
+        }
+        $table->pair = App_Model_Table::PAIR_YES;
+        $table->save();
     }
 }

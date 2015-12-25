@@ -11,8 +11,9 @@ class App_Map_Table extends Mongostar_Map_Instance
     public function rulesCommon()
     {
         return [
-            'name' => 'name',
-            'token' => 'token',
+            'name'   => 'name',
+            'token'  => 'token',
+            'pair'   => 'pair',
             'status' => 'status'
         ];
     }

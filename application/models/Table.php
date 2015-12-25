@@ -5,7 +5,8 @@
  * @property MongoId $id
  * @property string  $name
  * @property string  $token
- * @property integer $status
+ * @property string  $pair
+ * @property string  $status
  *
  * @method static App_Model_Table [] fetchAll(array $cond = null, array $sort = null, $count = null, $offset = null, $hint = NULL)
  * @method static App_Model_Table|null fetchOne(array $cond = null, array $sort = null)
@@ -13,6 +14,8 @@
  */
 class App_Model_Table extends Mongostar_Model
 {
-    const STATUS_WORK = 0;
-    const STATUS_DISABLED = 1;
+    const PAIR_YES = 'yes';
+    const PAIR_NO  = 'no';
+    const STATUS_ACTIVE = 'active';
+    const STATUS_LOCK = 'lock';
 }

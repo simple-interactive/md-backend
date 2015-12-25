@@ -10,7 +10,7 @@ abstract class Dispatcher_Controller_Base extends Zend_Controller_Action
         if ( ! $this->getDispatcherService()->checkToken(
             $this->getRequest()->getHeader('x-auth', false)
         )) {
-            throw new Exception(null, 403);
+            throw new Exception("Forbidden", 403);
         }
     }
 }
