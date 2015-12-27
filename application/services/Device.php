@@ -1,9 +1,9 @@
 <?php
 
 /**
- * @class App_Service_Dispatcher
+ * @class App_Service_Device
  */
-class App_Service_Dispatcher
+class App_Service_Device
 {
 
     /**
@@ -62,23 +62,51 @@ class App_Service_Dispatcher
     }
 
     /**
-     * @param $token
-     * @return bool
-     *
-     * @throws Zend_Exception
+     * @param App_Model_Table $table
+     * @throws Exception
      */
-    public function checkToken($token)
-    {
-        $config = Zend_Registry::get('config');
-        return $config['dispatcher']['token'] === $token;
-    }
-
     public function pairTable(App_Model_Table $table)
     {
         if ($table->pair == App_Model_Table::PAIR_YES) {
-            throw new \Exception('table-already-pair');
+            throw new \Exception('table-already-pair', 400);
         }
         $table->pair = App_Model_Table::PAIR_YES;
         $table->save();
+    }
+
+    /**
+     * @param string $token
+     *
+     * @return App_Model_Table|null
+     * @throws Exception
+     */
+    public function getTable($token)
+    {
+        $table = App_Model_Table::fetchOne([
+            'token' => $token
+        ]);
+        if (!$table) {
+         throw new Exception('tabl-not-found', 400);
+        }
+        return $table;
+    }
+
+    /**
+     * @param string $token
+     * @return App_Model_Table|bool
+     */
+    public function identify($token)
+    {
+        if (!empty($token)) {
+
+            $table = App_Model_Table::fetchOne([
+                'token' => $token
+            ]);
+
+            if ($table) {
+                return $table;
+            }
+        }
+        return false;
     }
 }

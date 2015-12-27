@@ -19,7 +19,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
      */
     protected function _initAutoloader()
     {
-        $modules = ['default', 'dispatcher'];
+        $modules = ['default', 'dispatcher', 'cli'];
 
         foreach ($modules as $module) {
             $moduleLoader = new Zend_Application_Module_Autoloader([

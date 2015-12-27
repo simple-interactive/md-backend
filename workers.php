@@ -47,7 +47,7 @@ if (isset($opts->a)) {
     $request = new Zend_Controller_Request_Simple();
     $request->setControllerName($controller);
     $request->setActionName($action);
-    $request->setModuleName('default');
+    $request->setModuleName('cli');
     $front = Zend_Controller_Front::getInstance();
     $front->setRequest($request);
     $front->setRouter(new RouterCli());

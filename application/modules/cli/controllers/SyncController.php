@@ -1,9 +1,7 @@
 <?php
 
-class SyncController extends Zend_Controller_Action
+class Cli_SyncController extends Cli_Controller_Base
 {
-    use App_Trait_SyncService;
-
     public function indexAction()
     {
         $lock = new App_Helper_Lock(__CLASS__);
@@ -13,7 +11,7 @@ class SyncController extends Zend_Controller_Action
         $lock->lock();
         try {
             $config = Zend_Registry::get('config');
-            $this->getSyncService()->uploadChanges(
+            $this->syncService->uploadChanges(
                 $config ['crm']['url'],
                 $config ['crm']['token']
             );

@@ -3,16 +3,16 @@
 abstract class Default_Controller_Base extends Zend_Controller_Action
 {
     /**
-     * @var App_Model_User $user
+     * @var App_Model_Table
      */
-    protected $user;
+    protected $table;
 
     public function init()
     {
         parent::init();
-        $userService = new App_Service_User();
-        $this->user = $userService->identify($this->getRequest()->getHeader('x-auth', false));
-        if (!$this->user) {
+        $deviceService = new App_Service_Device();
+        $this->table = $deviceService->identify($this->getRequest()->getHeader('x-auth', false));
+        if (!$this->table) {
             throw new Exception("Forbidden", 403);
         }
     }
