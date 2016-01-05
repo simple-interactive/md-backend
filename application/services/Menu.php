@@ -30,19 +30,9 @@ class App_Service_Menu
      */
     public function getSectionList($parentId = null)
     {
-        $condition = [];
-        if (!empty($parentId)) {
-            $parentSection = App_Model_Section::fetchOne([
-                'id' => $parentId
-            ]);
-
-            if (!$parentSection) {
-                throw new Exception('parent-section-not-found', 400);
-            }
-            $condition['parentId'] = $parentId;
-        }
-
-        return App_Model_Section::fetchAll($condition);
+        return App_Model_Section::fetchAll([
+            'parentId' => $parentId
+        ];);
     }
 
     /**
