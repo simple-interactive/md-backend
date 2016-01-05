@@ -74,6 +74,10 @@ class App_Service_Sync {
                     $section = new App_Model_Section();
                 }
                 $section->id = new MongoId($item['id']);
+
+                $section->image = $item['image'];
+                if (!empty($item['parentId']))
+                    $section->parentId = $item['parentId'];
                 $section->image = $item['image'];
                 $section->title = $item['title'];
                 $section->save();
