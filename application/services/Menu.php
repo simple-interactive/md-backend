@@ -32,7 +32,7 @@ class App_Service_Menu
     {
         return App_Model_Section::fetchAll([
             'parentId' => $parentId
-        ];);
+        ]);
     }
 
     /**
