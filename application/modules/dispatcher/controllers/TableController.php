@@ -16,6 +16,7 @@ class Dispatcher_TableController extends Dispatcher_Controller_Base
     {
         if ($this->getRequest()->isPost()) {
             $this->view->table = App_Map_Table::execute($this->deviceService->saveTable(
+              $this->getParam('id', false),
               $this->getParam('name', false),
               $this->getParam('token', false),
               $this->getParam('status',  false)
@@ -24,7 +25,7 @@ class Dispatcher_TableController extends Dispatcher_Controller_Base
         else if ($this->getRequest()->isGet()) {
             $this->view->table = App_Map_Table::execute(
                 $this->deviceService->getTable(
-                    $this->getParam('token', false)
+                    $this->getParam('id', false)
                 )
             );
         }
@@ -34,7 +35,7 @@ class Dispatcher_TableController extends Dispatcher_Controller_Base
     {
         if ($this->getRequest()->isPost()) {
             $this->deviceService->removeTable(
-                App_Model_Table::fetchOne(['token' => $this->getParam('token', false)])
+                App_Model_Table::fetchOne(['id' => $this->getParam('id', false)])
             );
         }
         else {
@@ -46,4 +47,5 @@ class Dispatcher_TableController extends Dispatcher_Controller_Base
     {
         $this->view->tables = App_Map_Table::execute($this->deviceService->getTableList());
     }
+
 }

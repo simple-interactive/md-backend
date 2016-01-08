@@ -7,6 +7,7 @@ class App_Service_Device
 {
 
     /**
+     * @param string $id
      * @param string $name
      * @param string $token
      * @param string $status
@@ -14,10 +15,10 @@ class App_Service_Device
      * @return App_Model_Table|null
      * @throws Exception
      */
-    public function saveTable($name, $token, $status)
+    public function saveTable($id, $name, $token, $status)
     {
         $table = App_Model_Table::fetchOne([
-            'token' => $token
+            'id' => $id
         ]);
         if (!$table) {
             $table = new App_Model_Table();
@@ -27,7 +28,10 @@ class App_Service_Device
         if (mb_strlen($name, 'UTF-8') == 0 && mb_strlen($name, 'UTF-8') > 30) {
             throw new \Exception('name-invalid', 400);
         }
-        if (mb_strlen($token, 'UTF-8') == 0 && mb_strlen($token, 'UTF-8') > 32) {
+        if (mb_strlen($token, 'UTF-8') == 0 && mb_strlen($token, 'UTF-8') > 32 ||
+            App_Model_Table::fetchOne([
+                'token' => $token
+            ])) {
             throw new \Exception('token-invalid', 400);
         }
         if ($status != App_Model_Table::STATUS_ACTIVE &&
@@ -75,15 +79,15 @@ class App_Service_Device
     }
 
     /**
-     * @param string $token
+     * @param string $id
      *
      * @return App_Model_Table|null
      * @throws Exception
      */
-    public function getTable($token)
+    public function getTable($id)
     {
         $table = App_Model_Table::fetchOne([
-            'token' => $token
+            'id' => $id
         ]);
         if (!$table) {
          throw new Exception('tabl-not-found', 400);
