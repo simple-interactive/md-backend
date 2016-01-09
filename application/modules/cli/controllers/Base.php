@@ -10,6 +10,7 @@ abstract class Cli_Controller_Base extends Zend_Controller_Action
     public function init()
     {
         parent::init();
-        $this->syncService = new App_Service_Sync();
+        $config = Zend_Registry::get('config');
+        $this->syncService = new App_Service_Sync($config['protocol'].'://'.$config['host']);
     }
 }

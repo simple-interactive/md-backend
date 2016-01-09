@@ -3,3 +3,4 @@ vendor
 composer.lock
 application/configs/application.ini
 runtime/*
+public/images/*

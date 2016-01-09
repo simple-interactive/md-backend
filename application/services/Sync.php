@@ -13,8 +13,14 @@ class App_Service_Sync {
      */
     private $_log;
 
-    public function __construct()
+    /**
+     * @var string
+     */
+    private $_host;
+
+    public function __construct($host)
     {
+        $this->_host = $host;
         $this->_log = new App_Helper_Log();
     }
     /**
@@ -48,6 +54,18 @@ class App_Service_Sync {
                 if (!$product) {
                     $product = new App_Model_Product();
                 }
+                if ( $this->_isChanged($item['images'], $item['id'], 'ProductImages') ) {
+                    if ( ! empty($product->images)) {
+                        $this->_removeImages($product->images);
+                    }
+                    foreach ($item['images'] as &$image) {
+                        $client = new Zend_Http_Client($image['url']);
+                        $result = $client->request('GET');
+                        file_put_contents(APPLICATION_PATH.'/../public/images/'.$image['name'], $result->getBody());
+                        $image['url'] = $this->_host.'/images/'.$image['name'];
+                    }
+                    $product->images = $item ['images'];
+                }
                 $product->id = new MongoId($item ['id']);
                 $product->sectionId = $item ['sectionId'];
                 $product->description = $item ['description'];
@@ -55,10 +73,19 @@ class App_Service_Sync {
                 $product->price = $item ['price'];
                 $product->options = $item ['options'];
                 $product->weight = $item ['weight'];
-                $product->images = $item ['images'];
                 $product->exists = $item ['exists'];
                 $product->save();
             }
+        }
+    }
+
+    /**
+     * @param array $images
+     */
+    private function _removeImages($images)
+    {
+        foreach ($images as $image) {
+            unlink(APPLICATION_PATH.'/../public/images/'.$image['name']);
         }
     }
 
@@ -67,18 +94,25 @@ class App_Service_Sync {
      */
     private function _uploadSections(array $dataSection)
     {
-        foreach ($dataSection as $item) {
+        foreach ($dataSection as &$item) {
             if ( $this->_isChanged($item, $item['id'], 'Section') ) {
                 $section = App_Model_Section::fetchOne(['id' => $item['id']]);
                 if (!$section) {
                     $section = new App_Model_Section();
                 }
+                if ( $this->_isChanged($item['image'], $item['id'], 'SectionImage') ) {
+                    if ( ! empty($section->image)) {
+                        $this->_removeImages([$section->image]);
+                    }
+                    $client = new Zend_Http_Client($item['image']['url']);
+                    $result = $client->request('GET');
+                    file_put_contents(APPLICATION_PATH.'/../public/images/'.$item['image']['name'], $result->getBody());
+                    $item['image']['url'] = $this->_host.'/images/'.$item['image']['name'];
+                    $section->image =  $item['image'];
+                }
                 $section->id = new MongoId($item['id']);
-
-                $section->image = $item['image'];
                 if (!empty($item['parentId']))
                     $section->parentId = $item['parentId'];
-                $section->image = $item['image'];
                 $section->title = $item['title'];
                 $section->save();
             }
@@ -122,6 +156,7 @@ class App_Service_Sync {
         else {
             $changes = new App_Model_Changes();
         }
+
         $changes->data = md5(print_r($data, true));
         $changes->refId = $id;
         $changes->type = $type;
