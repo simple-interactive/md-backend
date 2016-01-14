@@ -5,7 +5,7 @@
  */
 class App_Map_Product extends Mongostar_Map_Instance
 {
-    public static function rulesCommon()
+    public function rulesCommon()
     {
         return [
             'id' => 'id',
@@ -17,6 +17,18 @@ class App_Map_Product extends Mongostar_Map_Instance
             'weight' => 'weight',
             'images' => 'images',
             'exists' => 'exists'
+        ];
+    }
+    public function rulesOrder()
+    {
+        return [
+            'id' => 'id',
+            'sectionId' => 'sectionId',
+            'title' => 'title',
+            'description' => 'description',
+            'options' => 'options',
+            'price' => 'price',
+            'weight' => 'weight'
         ];
     }
 

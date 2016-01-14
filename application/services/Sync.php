@@ -58,11 +58,14 @@ class App_Service_Sync {
                     if ( ! empty($product->images)) {
                         $this->_removeImages($product->images);
                     }
+                    $i = 0;
                     foreach ($item['images'] as &$image) {
                         $client = new Zend_Http_Client($image['url']);
                         $result = $client->request('GET');
-                        file_put_contents(APPLICATION_PATH.'/../public/images/'.$image['name'], $result->getBody());
-                        $image['url'] = $this->_host.'/images/'.$image['name'];
+                        $name = $item ['id'] . '-' . $i ++;
+                        file_put_contents(APPLICATION_PATH.'/../public/images/'.$name, $result->getBody());
+                        $image['name'] = $name;
+                        $image['url'] = $this->_host.'/images/'.$name;
                     }
                     $product->images = $item ['images'];
                 }
@@ -106,8 +109,9 @@ class App_Service_Sync {
                     }
                     $client = new Zend_Http_Client($item['image']['url']);
                     $result = $client->request('GET');
-                    file_put_contents(APPLICATION_PATH.'/../public/images/'.$item['image']['name'], $result->getBody());
-                    $item['image']['url'] = $this->_host.'/images/'.$item['image']['name'];
+                    file_put_contents(APPLICATION_PATH.'/../public/images/'.$item['id'], $result->getBody());
+                    $item['image']['url'] = $this->_host.'/images/'.$item['id'];
+                    $item['image']['name'] = $item['id'];
                     $section->image =  $item['image'];
                 }
                 $section->id = new MongoId($item['id']);
