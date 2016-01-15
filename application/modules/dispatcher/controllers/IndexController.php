@@ -4,14 +4,11 @@ class Dispatcher_IndexController extends Dispatcher_Controller_Base
 {
     public function indexAction()
     {
-        $deviceService = new App_Service_Device();
-        $this->view->wait = App_Map_Table::execute(
-            $deviceService->getWaitTables()
-        );
+        $tableService = new App_Service_Device();
 
-        $deviceService = new App_Service_Order();
-        $this->view->orders = App_Map_Order::execute(
-            $deviceService->getUntrackedOrders()
+        $this->view->tables = App_Map_Table::execute(
+            $tableService->getActiveTables(),
+            'updater'
         );
     }
 }

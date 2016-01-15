@@ -16,14 +16,18 @@ class Dispatcher_TableController extends Dispatcher_Controller_Base
     public function indexAction()
     {
         if ($this->getRequest()->isPost()) {
-            $this->view->table = App_Map_Table::execute($this->deviceService->saveTable(
-              $this->getParam('id', false),
-              $this->getParam('name', false),
-              $this->getParam('token', false),
-              $this->getParam('status',  false)
-            ));
+
+            $this->view->table = App_Map_Table::execute(
+                $this->deviceService->saveTable(
+                    $this->getParam('id', false),
+                    $this->getParam('name', false),
+                    $this->getParam('token', false),
+                    $this->getParam('status',  false)
+                )
+            );
         }
         else if ($this->getRequest()->isGet()) {
+
             $this->view->table = App_Map_Table::execute(
                 $this->deviceService->getTable(
                     $this->getParam('id', false)
@@ -36,7 +40,9 @@ class Dispatcher_TableController extends Dispatcher_Controller_Base
     {
         if ($this->getRequest()->isPost()) {
             $this->deviceService->removeTable(
-                App_Model_Table::fetchOne(['id' => $this->getParam('id', false)])
+                App_Model_Table::fetchOne([
+                    'id' => $this->getParam('id', false)
+                ])
             );
         }
         else {
@@ -46,6 +52,8 @@ class Dispatcher_TableController extends Dispatcher_Controller_Base
 
     public function listAction()
     {
-        $this->view->tables = App_Map_Table::execute($this->deviceService->getTableList());
+        $this->view->tables = App_Map_Table::execute(
+            $this->deviceService->getTableList()
+        );
     }
 }

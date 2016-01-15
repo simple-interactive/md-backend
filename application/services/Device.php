@@ -66,6 +66,17 @@ class App_Service_Device
     /**
      * @return App_Model_Table[]
      */
+    public function getActiveTables()
+    {
+        return App_Model_Table::fetchAll([
+            'pair' => App_Model_Table::PAIR_YES,
+            'status' => App_Model_Table::STATUS_ACTIVE,
+        ]);
+    }
+
+    /**
+     * @return App_Model_Table[]
+     */
     public function getTableList()
     {
         return App_Model_Table::fetchAll();
@@ -127,15 +138,5 @@ class App_Service_Device
     {
         $table->isWaitingForWaiter = true;
         $table->save();
-    }
-
-    /**
-     * @return App_Model_Table[]
-     */
-    public function getWaitTables()
-    {
-        return App_Model_Table::fetchAll([
-            'isWaitingForWaiter' => true
-        ]);
     }
 }

@@ -7,7 +7,7 @@
  * @property string  $token
  * @property string  $pair
  * @property string  $status
- * @property string  $isWaitingForWaiter
+ * @property bool    $isWaitingForWaiter
  *
  * @method static App_Model_Table [] fetchAll(array $cond = null, array $sort = null, $count = null, $offset = null, $hint = NULL)
  * @method static App_Model_Table|null fetchOne(array $cond = null, array $sort = null)

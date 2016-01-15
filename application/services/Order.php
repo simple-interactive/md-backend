@@ -25,15 +25,4 @@ class App_Service_Order
         ]);
         $order->save();
     }
-
-    /**
-     * @return App_Model_Order[]
-     */
-    public function getUntrackedOrders()
-    {
-        return App_Model_Order::fetchAll([
-            'status' => ['$ne' => App_Model_Order::STATUS_SUCCESS],
-            'payStatus' => ['$ne' => App_Model_Order::PAY_STATUS_YES],
-        ]);
-    }
 }
