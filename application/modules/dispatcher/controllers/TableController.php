@@ -56,4 +56,13 @@ class Dispatcher_TableController extends Dispatcher_Controller_Base
             $this->deviceService->getTableList()
         );
     }
+
+    public function stopCallingWaiterAction()
+    {
+        $this->deviceService->stopCallingWaiter(
+            App_Model_Table::fetchOne([
+                'id' => $this->getParam('id')
+            ])
+        );
+    }
 }

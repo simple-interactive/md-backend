@@ -139,4 +139,13 @@ class App_Service_Device
         $table->isWaitingForWaiter = true;
         $table->save();
     }
+
+    /**
+     * @param App_Model_Table $table
+     */
+    public function stopCallingWaiter(App_Model_Table $table)
+    {
+        $table->isWaitingForWaiter = false;
+        $table->save();
+    }
 }
