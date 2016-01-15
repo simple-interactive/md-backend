@@ -51,7 +51,7 @@ class App_Map_Table extends Mongostar_Map_Instance
      */
     public function getIsWaiting(App_Model_Table $table)
     {
-        return $table->isWaitingForWaiter;
+        return (bool)$table->isWaitingForWaiter;
     }
 
     /**
