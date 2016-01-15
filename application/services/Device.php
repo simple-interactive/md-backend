@@ -28,11 +28,17 @@ class App_Service_Device
         if (mb_strlen($name, 'UTF-8') == 0 && mb_strlen($name, 'UTF-8') > 30) {
             throw new \Exception('name-invalid', 400);
         }
-        if (mb_strlen($token, 'UTF-8') == 0 && mb_strlen($token, 'UTF-8') > 32 ||
-            App_Model_Table::fetchOne([
-                'token' => $token
-            ])) {
-            throw new \Exception('token-invalid', 400);
+        if (mb_strlen($token, 'UTF-8') == 0 && mb_strlen($token, 'UTF-8') > 32) {
+
+            $tableWithToken = App_Model_Table::fetchOne(['token' => $token]);
+
+            if (!$table && $tableWithToken) {
+                throw new \Exception('token-invalid', 400);
+            }
+
+            if ($table && $id == (string)$tableWithToken->id) {
+                throw new \Exception('token-invalid', 400);
+            }
         }
         if ($status != App_Model_Table::STATUS_ACTIVE &&
             $status != App_Model_Table::STATUS_LOCK) {
