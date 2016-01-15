@@ -6,8 +6,6 @@ class Dispatcher_OrderController extends Dispatcher_Controller_Base
     {
       $this->view->orders = App_Map_Order::execute(
           App_Model_Order::fetchAll([
-
-              /*
               '$or' => [
                   [
                       'status' => App_Model_Order::STATUS_SUCCESS,
@@ -22,10 +20,6 @@ class Dispatcher_OrderController extends Dispatcher_Controller_Base
                       'payStatus' => App_Model_Order::PAY_STATUS_YES
                   ]
               ]
-              */
-
-              'status' => ['$ne' => App_Model_Order::STATUS_SUCCESS],
-              'payStatus' => ['$ne' => App_Model_Order::PAY_STATUS_YES],
           ])
       );
     }

@@ -5,7 +5,7 @@ abstract class Default_Controller_Base extends Zend_Controller_Action
     /**
      * @var App_Model_Table
      */
-    protected $table;
+    public $table;
 
     public function init()
     {

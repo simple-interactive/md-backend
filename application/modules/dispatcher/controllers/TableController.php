@@ -12,6 +12,7 @@ class Dispatcher_TableController extends Dispatcher_Controller_Base
         parent::init();
         $this->deviceService = new App_Service_Device();
     }
+
     public function indexAction()
     {
         if ($this->getRequest()->isPost()) {
@@ -47,5 +48,4 @@ class Dispatcher_TableController extends Dispatcher_Controller_Base
     {
         $this->view->tables = App_Map_Table::execute($this->deviceService->getTableList());
     }
-
 }

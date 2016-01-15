@@ -113,4 +113,23 @@ class App_Service_Device
         }
         return false;
     }
+
+    /**
+     * @param App_Model_Table $table
+     */
+    public function callWaiter(App_Model_Table $table)
+    {
+        $table->isWaitingForWaiter = true;
+        $table->save();
+    }
+
+    /**
+     * @return App_Model_Table[]
+     */
+    public function getWaitTables()
+    {
+        return App_Model_Table::fetchAll([
+            'isWaitingForWaiter' => true
+        ]);
+    }
 }
