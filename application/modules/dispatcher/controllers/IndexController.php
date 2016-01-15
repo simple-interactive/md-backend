@@ -1,6 +1,6 @@
 <?php
 
-class Dispatcher_IndexController extends Default_Controller_Base
+class Dispatcher_IndexController extends Dispatcher_Controller_Base
 {
     public function indexAction()
     {
