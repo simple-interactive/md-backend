@@ -160,7 +160,7 @@ class App_Service_Sync {
 
         if (count($ids) != 0) {
             App_Model_Section::remove([
-                'ids' => ['$nin' => $ids]
+                'id' => ['$nin' => $ids]
             ]);
         }
     }

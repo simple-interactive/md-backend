@@ -6,7 +6,7 @@ class Cli_SyncController extends Cli_Controller_Base
     {
         $lock = new App_Helper_Lock(__CLASS__);
         if ($lock->isLock() === true) {
-            return;
+            die('Lock file ' + __CLASS__);
         }
         $lock->lock();
         try {
