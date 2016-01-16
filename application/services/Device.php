@@ -23,31 +23,34 @@ class App_Service_Device
         if (!$table) {
             $table = new App_Model_Table();
             $table->pair = App_Model_Table::PAIR_NO;
+            $table->token = $token;
         }
 
-        if (mb_strlen($name, 'UTF-8') == 0 && mb_strlen($name, 'UTF-8') > 30) {
+        if (mb_strlen($name, 'UTF-8') == 0 || mb_strlen($name, 'UTF-8') > 32) {
             throw new \Exception('name-invalid', 400);
         }
-        if (mb_strlen($token, 'UTF-8') == 0 && mb_strlen($token, 'UTF-8') > 32) {
-
-            $tableWithToken = App_Model_Table::fetchOne(['token' => $token]);
-
-            if (!$table && $tableWithToken) {
-                throw new \Exception('token-invalid', 400);
-            }
-
-            if ($table && $id == (string)$tableWithToken->id) {
-                throw new \Exception('token-invalid', 400);
-            }
+        if (mb_strlen($token, 'UTF-8') == 0 || mb_strlen($token, 'UTF-8') > 32) {
+            throw new \Exception('token-invalid', 400);
         }
+
+        $tableWithToken = App_Model_Table::fetchOne(['token' => $token]);
+
+        if ($table && $tableWithToken && $table->token == $tableWithToken->token) {
+            throw new \Exception('token-invalid', 400);
+        }
+
+        if ($table && $tableWithToken && $id == (string)$tableWithToken->id) {
+            throw new \Exception('token-invalid', 400);
+        }
+
         if ($status != App_Model_Table::STATUS_ACTIVE &&
             $status != App_Model_Table::STATUS_LOCK) {
             throw new \Exception('status-invalid', 400);
         }
 
         $table->name = $name;
-        $table->token = $token;
         $table->status = $status;
+        $table->token = $token;
         $table->save();
 
         return $table;
