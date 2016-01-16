@@ -48,7 +48,23 @@ class App_Service_Sync {
      * @param array $products
      */
     private function _updateProduct(array $products){
+
+        if ( empty($products) || count($products) == 0) {
+            $products = App_Model_Product::fetchAll();
+            /**
+             * @var App_Model_Product $product
+             */
+            foreach($products as $product) {
+                App_Model_Section::remove([
+                    'id' => (string) $product->id
+                ]);
+            }
+            return;
+        };
+
+        $ids = [];
         foreach ($products as $item) {
+            $ids [] = $item ['id'];
             if ( $this->_isChanged($item, $item['id'], 'Product') ) {
                 $product = App_Model_Product::fetchOne(['id' => $item['id']]);
                 if (!$product) {
@@ -80,6 +96,12 @@ class App_Service_Sync {
                 $product->save();
             }
         }
+
+        if (count($ids) != 0) {
+            App_Model_Product::remove([
+                'id' => ['$nin' => $ids]
+            ]);
+        }
     }
 
     /**
@@ -97,7 +119,21 @@ class App_Service_Sync {
      */
     private function _uploadSections(array $dataSection)
     {
+        if ( empty($dataSection) || count($dataSection) == 0) {
+            $sections = App_Model_Section::fetchAll();
+            /**
+             * @var App_Model_Section $section
+             */
+            foreach($sections as $section) {
+                App_Model_Section::remove([
+                    'id' => (string) $section->id
+                ]);
+            }
+            return;
+        };
+        $ids = [];
         foreach ($dataSection as &$item) {
+            $ids [] = $item['id'];
             if ( $this->_isChanged($item, $item['id'], 'Section') ) {
                 $section = App_Model_Section::fetchOne(['id' => $item['id']]);
                 if (!$section) {
@@ -120,6 +156,12 @@ class App_Service_Sync {
                 $section->title = $item['title'];
                 $section->save();
             }
+        }
+
+        if (count($ids) != 0) {
+            App_Model_Section::remove([
+                'ids' => ['$nin' => $ids]
+            ]);
         }
     }
 
