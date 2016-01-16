@@ -75,8 +75,20 @@ class App_Map_Table extends Mongostar_Map_Instance
     {
         return App_Map_Order::execute(App_Model_Order::fetchAll([
             'tableId' => (string) $table->id,
-            'status' => ['$ne' => App_Model_Order::STATUS_SUCCESS],
-            'payStatus' => ['$ne' => App_Model_Order::PAY_STATUS_YES]
+            '$or' => [
+                [
+                    'status' => App_Model_Order::STATUS_SUCCESS,
+                    'payStatus' => App_Model_Order::PAY_STATUS_NO
+                ],
+                [
+                    'status' => App_Model_Order::STATUS_NEW,
+                    'payStatus' => App_Model_Order::PAY_STATUS_NO
+                ],
+                [
+                    'status' => App_Model_Order::STATUS_NEW,
+                    'payStatus' => App_Model_Order::PAY_STATUS_YES
+                ]
+            ]
         ]));
     }
 }
