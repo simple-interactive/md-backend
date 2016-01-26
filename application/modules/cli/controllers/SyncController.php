@@ -22,4 +22,4 @@ class Cli_SyncController extends Cli_Controller_Base
         }
         $lock->unlock();
     }
-} 
+}

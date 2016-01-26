@@ -7,6 +7,7 @@ class App_Service_Sync {
 
     const CRM_GET_ALL_DATA = 'mdapi/';
     const CRM_PUST_ORDER = 'mdapi/order';
+    const CRM_PUST_EXISTS = 'mdapi/product-exists';
     const HEADER_XAUTH = 'x-auth';
 
     /**
@@ -39,6 +40,7 @@ class App_Service_Sync {
             $this->_updateProduct($data['products']);
             $this->_uploadSections($data['sections']);
             $this->_uploadStyle($data['style']);
+            $this->_uploadSearch($data['search']);
         }
         else {
             $this->_log->err('Can\'t auth in crm [code='.$response->getStatus().', body='.$response->getBody().']');
@@ -186,6 +188,33 @@ class App_Service_Sync {
     }
 
     /**
+     * @param array $searchs
+     */
+    private function _uploadSearch(array $searchs)
+    {
+        $ids = [];
+        foreach ($searchs as $item) {
+            $ids [] = $item['id'];
+            if ($this->_isChanged($item, $item['id'], 'Search')) {
+                $search = App_Model_Search::fetchOne([
+                    'id' => $item ['id']
+                ]);
+                if (!$search) {
+                   $search = new App_Model_Search();
+                }
+
+                $search->id = new \MongoId($item['id']);
+                $search->productId = $item['productId'];
+                $search->data = $item['data'];
+                $search->save();
+            }
+        }
+        App_Model_Search::remove([
+            'id' => ['$nin' => $ids]
+        ]);
+    }
+
+    /**
      * @param array $data
      * @param string $id
      * @param string $type
@@ -229,7 +258,26 @@ class App_Service_Sync {
             'orders' => $data
         ]);
         $response = $client->request(Zend_Http_Client::POST);
+        if ($response->getStatus() == 200)
+        {
+            $ids = [];
+            foreach ($orders as $order) {
+                $ids [] = (string) $order->id;
+            }
+            App_Model_Order::remove([
+                'id' => ['$in' => $ids]
+            ]);
+        }
+    }
 
-        die($response->getBody());
+    public function pushProductExists($url, $token, $id, $exists)
+    {
+        $client = new Zend_Http_Client($url.self::CRM_PUST_EXISTS);
+        $client->setHeaders('x-auth', $token);
+        $client->setParameterPost([
+            'id' => $id,
+            'exists' => $exists
+        ]);
+        $response = $client->request(Zend_Http_Client::POST);
     }
 } 

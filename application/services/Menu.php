@@ -60,16 +60,25 @@ class App_Service_Menu
     /**
      * @param int $offset
      * @param int $count
+     * @param bool $onlyExists
      *
      * @return App_Model_Product[]
      */
-    public function getProductList($offset = 0, $count = 10)
+    public function getProductList($offset = 0, $count = 10, $onlyExists = false)
     {
-        return App_Model_Product::fetchAll([], null, (int)$count, (int)$offset);
+        $cond = [];
+        if ($onlyExists) {
+            $cond ['exists'] = true;
+        }
+        return App_Model_Product::fetchAll($cond, null, (int)$count, (int)$offset);
     }
 
-    public function getProductCount()
+    public function getProductCount($onlyExists = false)
     {
+        $cond = [];
+        if ($onlyExists) {
+            $cond ['exists'] = true;
+        }
         return App_Model_Product::getCount();
     }
     /**
@@ -225,5 +234,23 @@ class App_Service_Menu
         }
 
         return $toPrint['sections'];
+    }
+
+    /**
+     * @param $productId
+     * @param bool $exists
+     *
+     * @throws Exception
+     */
+    public function setProductExists($productId, $exists)
+    {
+        $product = App_Model_Product::fetchOne([
+            'id' => $productId
+        ]);
+        if (!$productId) {
+           throw new \Exception('product-not-found');
+        }
+        $product->exists = $exists;
+        $product->save();
     }
 } 
