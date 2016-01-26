@@ -4,6 +4,7 @@
  *
  * @property MongoId $id
  * @property array   $data
+ * @property integer $createdDate
  * @property string  $status
  * @property string  $payStatus
  * @property string  $tableId

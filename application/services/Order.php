@@ -21,7 +21,8 @@ class App_Service_Order
             'data' => $data,
             'status' => App_Model_Order::STATUS_NEW,
             'payStatus' => App_Model_Order::PAY_STATUS_NO,
-            'tableId' => (string)$table->id
+            'tableId' => (string)$table->id,
+            'createdDate' => time()
         ]);
         $order->save();
     }

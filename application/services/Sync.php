@@ -6,6 +6,7 @@
 class App_Service_Sync {
 
     const CRM_GET_ALL_DATA = 'mdapi/';
+    const CRM_PUST_ORDER = 'mdapi/order';
     const HEADER_XAUTH = 'x-auth';
 
     /**
@@ -210,4 +211,25 @@ class App_Service_Sync {
         return true;
     }
 
+    public function pushOrders($url, $token)
+    {
+        $orders = App_Model_Order::fetchAll([
+            'payStatus' => App_Model_Order::PAY_STATUS_YES,
+            'status' => App_Model_Order::STATUS_SUCCESS
+        ]);
+
+        $data = [];
+        foreach ($orders as $order) {
+            $data [] = $order->asArray();
+        }
+
+        $client = new Zend_Http_Client($url.self::CRM_PUST_ORDER);
+        $client->setHeaders('x-auth', $token);
+        $client->setParameterPost([
+            'orders' => $data
+        ]);
+        $response = $client->request(Zend_Http_Client::POST);
+
+        die($response->getBody());
+    }
 } 

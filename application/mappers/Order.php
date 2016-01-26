@@ -12,7 +12,8 @@ class App_Map_Order extends Mongostar_Map_Instance
             'data' => 'data',
             'tableId' => 'tableId',
             'status' => 'status',
-            'payStatus' => 'payStatus'
+            'payStatus' => 'payStatus',
+            'createdDate' => 'createdDate'
         ];
     }
 }
