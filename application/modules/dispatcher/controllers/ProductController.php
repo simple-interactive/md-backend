@@ -15,7 +15,7 @@ class Dispatcher_ProductController extends Default_Controller_Base
     {
         parent::init();
         $config = Zend_Registry::get('config');
-        $this->_syncService = new App_Service_Sync($config['protocol'].'://'.$config['host']);
+        $this->_syncService = new App_Service_Sync($config['crm']['url'], $config['crm']['token']);
     }
 
     public function listAction()
@@ -36,11 +36,7 @@ class Dispatcher_ProductController extends Default_Controller_Base
             $this->getParam('id', null),
             $this->getParam('exists', null)
         );
-
-        $config = Zend_Registry::get('config');
         $this->_syncService->pushProductExists(
-            $config ['crm']['url'],
-            $config ['crm']['token'],
             $this->getParam('id', null),
             $this->getParam('exists', null)
         );

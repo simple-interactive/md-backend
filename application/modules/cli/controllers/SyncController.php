@@ -10,13 +10,12 @@ class Cli_SyncController extends Cli_Controller_Base
         }
         $lock->lock();
         try {
-            $config = Zend_Registry::get('config');
-            $this->syncService->uploadChanges(
-                $config ['crm']['url'],
-                $config ['crm']['token']
-            );
+            $this->log->info(__CLASS__.' start');
+            $this->syncService->uploadChanges();
+            $this->log->info(__CLASS__.' finish');
         }
         catch (Exception $e) {
+            $this->log->err('SyncController error', $e);
             $lock->unlock();
             throw $e;
         }

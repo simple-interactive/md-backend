@@ -17,14 +17,6 @@ class App_Service_Device
      */
     public function saveTable($id, $name, $token, $status)
     {
-        $table = App_Model_Table::fetchOne([
-            'id' => $id
-        ]);
-        if (!$table) {
-            $table = new App_Model_Table();
-            $table->pair = App_Model_Table::PAIR_NO;
-            $table->token = $token;
-        }
 
         if (mb_strlen($name, 'UTF-8') == 0 || mb_strlen($name, 'UTF-8') > 32) {
             throw new \Exception('name-invalid', 400);
@@ -32,14 +24,29 @@ class App_Service_Device
         if (mb_strlen($token, 'UTF-8') == 0 || mb_strlen($token, 'UTF-8') > 32) {
             throw new \Exception('token-invalid', 400);
         }
+        
+        $table = App_Model_Table::fetchOne([
+            'id' => $id
+        ]);
 
-        $tableWithToken = App_Model_Table::fetchOne(['token' => $token]);
-
-        if ($table && $tableWithToken && $table->token == $tableWithToken->token) {
-            throw new \Exception('token-invalid', 400);
+        if (!$table) {
+            $table = new App_Model_Table();
+            $table->pair = App_Model_Table::PAIR_NO;
+            $table->token = $token;
         }
 
-        if ($table && $tableWithToken && $id == (string)$tableWithToken->id) {
+        if ( $table->id &&
+            $table->token != $token &&
+            App_Model_Table::fetchOne([
+                'id' => ['$ne' => $id],
+                'token' => $token
+            ])
+        ) {
+            throw new \Exception('token-invalid', 400);
+        }
+        else if (! $table->id && App_Model_Table::fetchOne([
+                'token' => $token
+            ])){
             throw new \Exception('token-invalid', 400);
         }
 

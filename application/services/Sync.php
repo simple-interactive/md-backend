@@ -11,28 +11,60 @@ class App_Service_Sync {
     const HEADER_XAUTH = 'x-auth';
 
     /**
-     * @var App_Helper_Log
-     */
-    private $_log;
-
-    /**
      * @var string
      */
     private $_host;
+    /**
+     * @var string
+     */
+    private $_token;
+    /**
+     * @var string
+     */
+    private $_crm;
 
-    public function __construct($host)
+    /**
+     * @param string $crm - CRM url
+     * @param string $token - CRM token
+     * @param string $host - MD HOST
+     *
+     * @throws Exception
+     */
+    public function __construct($crm, $token, $host = null)
     {
         $this->_host = $host;
-        $this->_log = new App_Helper_Log();
+        if (empty($crm))
+            throw new Exception('CRM url invalid', 400);
+        $this->_crm = $crm;
+        if (empty($token))
+            throw new Exception('CRM token invalid', 400);
+        $this->_token = $token;
     }
+
     /**
-     * @param string $url
-     * @param string $token
+     * @param string $action
+     * @return Zend_Http_Client
+     *
+     * @throws Zend_Http_Client_Exception
      */
-    public function uploadChanges($url, $token)
+    private function _createClient($action)
     {
-        $client = new Zend_Http_Client($url.self::CRM_GET_ALL_DATA);
-        $client->setHeaders('x-auth', $token);
+        $client = new Zend_Http_Client($this->_crm.$action);
+        $client->setHeaders([
+           'x-auth' => $this->_token
+        ]);
+        return $client;
+    }
+
+    /**
+     * @throws Zend_Http_Client_Exception
+     */
+    public function uploadChanges()
+    {
+        if (empty($this->_host))
+            throw new Exception('Host invalid', 400);
+
+        $client = $this->_createClient(self::CRM_GET_ALL_DATA);
         $response = $client->request(Zend_Http_Client::GET);
 
         if ($response->getStatus() == 200) {
@@ -43,7 +75,7 @@ class App_Service_Sync {
             $this->_uploadSearch($data['search']);
         }
         else {
-            $this->_log->err('Can\'t auth in crm [code='.$response->getStatus().', body='.$response->getBody().']');
+            throw new \Exception('Can\'t auth in crm [code='.$response->getStatus().', body='.$response->getBody().']');
         }
     }
 
@@ -240,8 +272,12 @@ class App_Service_Sync {
         return true;
     }
 
-    public function pushOrders($url, $token)
+    /**
+     * @throws Zend_Http_Client_Exception
+     */
+    public function pushOrders()
     {
+        // Get all closed orders
         $orders = App_Model_Order::fetchAll([
             'payStatus' => App_Model_Order::PAY_STATUS_YES,
             'status' => App_Model_Order::STATUS_SUCCESS
@@ -252,14 +288,16 @@ class App_Service_Sync {
             $data [] = $order->asArray();
         }
 
-        $client = new Zend_Http_Client($url.self::CRM_PUST_ORDER);
-        $client->setHeaders('x-auth', $token);
+        // Push orders
+        $client = $this->_createClient(self::CRM_PUST_ORDER);
+        echo $client->getUri(true).PHP_EOL;
         $client->setParameterPost([
             'orders' => $data
         ]);
         $response = $client->request(Zend_Http_Client::POST);
         if ($response->getStatus() == 200)
         {
+            // Remove all closed orders
             $ids = [];
             foreach ($orders as $order) {
                 $ids [] = (string) $order->id;
@@ -268,16 +306,30 @@ class App_Service_Sync {
                 'id' => ['$in' => $ids]
             ]);
         }
+        echo $response->getStatus();
+        echo PHP_EOL;
+        echo $response->getBody();
+        die;
     }
 
-    public function pushProductExists($url, $token, $id, $exists)
+    /**
+     * @param $id
+     * @param $exists
+     *
+     * @throws Exception
+     * @throws Zend_Http_Client_Exception
+     */
+    public function pushProductExists($id, $exists)
     {
-        $client = new Zend_Http_Client($url.self::CRM_PUST_EXISTS);
-        $client->setHeaders('x-auth', $token);
+        $client = $this->_createClient(self::CRM_PUST_EXISTS);
         $client->setParameterPost([
             'id' => $id,
             'exists' => $exists
         ]);
         $response = $client->request(Zend_Http_Client::POST);
+
+        if ($response->getStatus() !== 200) {
+            throw new \Exception('Operation failed', 400);
+        }
     }
 } 

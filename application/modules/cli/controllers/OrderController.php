@@ -10,13 +10,12 @@ class Cli_OrderController extends Cli_Controller_Base
         }
         $lock->lock();
         try {
-            $config = Zend_Registry::get('config');
-            $this->syncService->pushOrders(
-                $config ['crm']['url'],
-                $config ['crm']['token']
-            );
+            $this->log->info(__CLASS__.' start');
+            $this->syncService->pushOrders();
+            $this->log->info(__CLASS__.' finish');
         }
         catch (Exception $e) {
+            $this->log->err(__CLASS__.' error', $e);
             $lock->unlock();
             throw $e;
         }
