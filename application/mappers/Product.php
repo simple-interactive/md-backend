@@ -40,10 +40,12 @@ class App_Map_Product extends Mongostar_Map_Instance
     public function getSectionId(App_Model_Product $product)
     {
         $section = App_Model_Section::fetchOne(['id' => $product->sectionId]);
+        if (!$section) {
+            return null;
+        }
         return [
             'title' => $section->title,
             'id' => (string)$section->id
-
         ];
     }
 } 

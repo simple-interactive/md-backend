@@ -253,4 +253,45 @@ class App_Service_Menu
         $product->exists = $exists;
         $product->save();
     }
+
+    /**
+     * @param string $search
+     * @param int $offset
+     * @param int $count
+     *
+     * @return App_Model_Product[]
+     * @throws Exception
+     */
+    public function getProductListBySearch($search, $offset = 0, $count = 10)
+    {
+        if (!$search) {
+            throw new Exception('search-invalid', 400);
+        }
+        $models = App_Model_Search::fetchAll([
+            'data' => new MongoRegex("/$search/i")
+        ]);
+        $ids = [];
+        foreach ($models as $item) {
+            $ids [] = $item->productId;
+        }
+        return App_Model_Product::fetchAll([
+            'id' => ['$in' => $ids]
+        ], null, (int)$count, (int)$offset);
+    }
+
+    /**
+     * @param $search
+     *
+     * @return int
+     * @throws Exception
+     */
+    public function getProductCountBySearch($search)
+    {
+        if (!$search) {
+            throw new Exception('search-invalid', 400);
+        }
+        return App_Model_Search::getCount([
+            'data' => new MongoRegex("/$search/i")
+        ]);
+    }
 } 

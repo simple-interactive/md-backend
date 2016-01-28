@@ -3,7 +3,7 @@
 /**
  * @class ProductController
  */
-class Dispatcher_ProductController extends Default_Controller_Base
+class Dispatcher_ProductController extends Zend_Controller_Action
 {
     use App_Trait_MenuService;
     /**
@@ -32,6 +32,9 @@ class Dispatcher_ProductController extends Default_Controller_Base
 
     public function existsAction()
     {
+        if (!$this->getRequest()->isPost()) {
+            throw new Exception('unsupported-method', 400);
+        }
         $this->getMenuService()->setProductExists(
             $this->getParam('id', null),
             $this->getParam('exists', null)
@@ -39,6 +42,21 @@ class Dispatcher_ProductController extends Default_Controller_Base
         $this->_syncService->pushProductExists(
             $this->getParam('id', null),
             $this->getParam('exists', null)
+        );
+    }
+
+    public function searchAction()
+    {
+        if (!$this->getRequest()->isGet()) {
+            throw new Exception('unsupported-method', 400);
+        }
+        $this->view->products = App_Map_Product::execute($this->getMenuService()->getProductListBySearch(
+            $this->getParam('search', false),
+            $this->getParam('offset', 0),
+            $this->getParam('limit', 10)
+        ));
+        $this->view->count = $this->getMenuService()->getProductCountBySearch(
+            $this->getParam('search', false)
         );
     }
 } 
