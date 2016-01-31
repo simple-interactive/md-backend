@@ -7,6 +7,7 @@
  * @property string  $userId
  * @property string  $sectionId
  * @property string  $title
+ * @property array   $ingredients
  * @property string  $description
  * @property array   $options
  * @property float   $price

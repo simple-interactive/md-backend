@@ -69,6 +69,7 @@ class App_Service_Sync {
 
         if ($response->getStatus() == 200) {
             $data = json_decode($response->getBody(), true);
+            
             $this->_updateProduct($data['products']);
             $this->_uploadSections($data['sections']);
             $this->_uploadStyle($data['style']);
@@ -126,6 +127,7 @@ class App_Service_Sync {
                 $product->title = $item ['title'];
                 $product->price = $item ['price'];
                 $product->options = $item ['options'];
+                $product->ingredients = $item['ingredients'];
                 $product->weight = $item ['weight'];
                 $product->exists = $item ['exists'];
                 $product->save();
@@ -280,7 +282,8 @@ class App_Service_Sync {
         // Get all closed orders
         $orders = App_Model_Order::fetchAll([
             'payStatus' => App_Model_Order::PAY_STATUS_YES,
-            'status' => App_Model_Order::STATUS_SUCCESS
+            'status' => App_Model_Order::STATUS_SUCCESS,
+            'isPushed' => App_Model_Order::PAY_STATUS_NO
         ]);
 
         $data = [];
@@ -297,19 +300,12 @@ class App_Service_Sync {
         $response = $client->request(Zend_Http_Client::POST);
         if ($response->getStatus() == 200)
         {
-            // Remove all closed orders
-            $ids = [];
+            // Update push status
             foreach ($orders as $order) {
-                $ids [] = (string) $order->id;
+                $order->isPushed = App_Model_Order::PUSH_STATUS_YES;
+                $order->save();
             }
-            App_Model_Order::remove([
-                'id' => ['$in' => $ids]
-            ]);
         }
-        echo $response->getStatus();
-        echo PHP_EOL;
-        echo $response->getBody();
-        die;
     }
 
     /**

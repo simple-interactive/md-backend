@@ -2,6 +2,17 @@
 
 class Dispatcher_OrderController extends Dispatcher_Controller_Base
 {
+
+    /**
+     * @var App_Service_Statistics
+     */
+    private $_statistics;
+
+    public function init()
+    {
+        $this->_statistics = new App_Service_Statistics();
+    }
+
     public function listAction()
     {
       $this->view->orders = App_Map_Order::execute(
@@ -40,5 +51,25 @@ class Dispatcher_OrderController extends Dispatcher_Controller_Base
         ]);
         $order->status = $this->getParam('status', null);
         $order->save();
+    }
+
+    public function ordersAction()
+    {
+        if ( ! $this->getRequest()->isGet()) {
+            throw new \Exception('unsupported-method');
+        }
+        $this->view->orders = App_Map_Order::execute($this->_statistics->getOrders(
+            $this->getParam('timeStart', null),
+            $this->getParam('timeEnd', null),
+            $this->getParam('offset', 0),
+            $this->getParam('count', 10),
+            App_Model_Section::fetchOne([
+                'id' => $this->getParam('sectionId', null)
+            ])
+        ));
+        $this->view->count = $this->_statistics->getCountOrders(
+            $this->getParam('timeStart', null),
+            $this->getParam('timeEnd', null)
+        );
     }
 }
