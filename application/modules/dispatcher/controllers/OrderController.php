@@ -65,11 +65,28 @@ class Dispatcher_OrderController extends Dispatcher_Controller_Base
             $this->getParam('count', 10),
             App_Model_Section::fetchOne([
                 'id' => $this->getParam('sectionId', null)
-            ])
+            ]),
+            $this->getParam('status', null),
+            $this->getParam('paymentMethod', null),
+            $this->getParam()
         ));
         $this->view->count = $this->_statistics->getCountOrders(
             $this->getParam('timeStart', null),
             $this->getParam('timeEnd', null)
         );
+    }
+
+    public function cancelAction()
+    {
+        $order = App_Model_Order::fetchOne([
+            'id' => $this->getParam('id', null)
+        ]);
+
+        if (!$order) {
+            throw new \Exception('order-not-found');
+        }
+
+        $order->status = App_Model_Order::STATUS_CANCELED;
+        $order->save();
     }
 }

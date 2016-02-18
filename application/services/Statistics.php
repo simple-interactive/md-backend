@@ -9,9 +9,11 @@ class App_Service_Statistics
     public function getOrders(
         $timeStart,
         $timeEnd,
-        $offset,
-        $count,
-        App_Model_Section $section = null
+        $offset = 0,
+        $count = 10,
+        App_Model_Section $section = null,
+        $status,
+        $paymentMethod
     )
     {
         if ($timeStart >= $timeEnd) {
@@ -30,6 +32,14 @@ class App_Service_Statistics
             $cond ['data.product.section.id'] = [
                 '$in' => $ids
             ];
+        }
+
+        if ($status) {
+            $cond['status'] = $status;
+        }
+
+        if ($paymentMethod) {
+            $cond['paymentMethod'] = $paymentMethod;
         }
         
         $orders = App_Model_Order::fetchAll(
