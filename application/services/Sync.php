@@ -74,6 +74,10 @@ class App_Service_Sync {
             $this->_uploadSections($data['sections']);
             $this->_uploadStyle($data['style']);
             $this->_uploadSearch($data['search']);
+
+            $settings = App_Model_Settings::fetchObject();
+            $settings->data = $data ['settings'] ['data'];
+            $settings->save();
         }
         else {
             throw new \Exception('Can\'t auth in crm [code='.$response->getStatus().', body='.$response->getBody().']');
