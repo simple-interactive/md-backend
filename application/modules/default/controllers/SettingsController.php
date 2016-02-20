@@ -4,8 +4,7 @@ class SettingsController extends Default_Controller_Base
 {
     public function indexAction()
     {
-        $this->view->keys = App_Map_Settings::execute(
-            App_Model_Settings::fetchOne()
-        );
+        $settings = App_Model_Settings::fetchOne();
+        $this->view->settings = $settings->data;
     }
 }
