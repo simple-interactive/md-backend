@@ -9,8 +9,14 @@ class App_Service_Order
      * @param array $data
      * @param App_Model_Table $table
      */
-    public function createOrder(array $data, App_Model_Table $table)
+    public function createOrder(array $data, $paymentMethod ,App_Model_Table $table)
     {
+        $payStatus = App_Model_Order::PAY_STATUS_NO;
+
+        if ($paymentMethod === App_Model_Order::PAYMENT_METHOD_CARD) {
+            $payStatus = App_Model_Order::STATUS_SUCCESS;
+        }
+
         foreach ($data as &$item) {
             $product = App_Model_Product::fetchOne([
                 'id' => $item ['product']
@@ -20,11 +26,11 @@ class App_Service_Order
         $order = new App_Model_Order([
             'data' => $data,
             'status' => App_Model_Order::STATUS_NEW,
-            'payStatus' => App_Model_Order::PAY_STATUS_NO,
+            'payStatus' => $payStatus,
             'tableId' => (string)$table->id,
             'createdDate' => time(),
             'isPushed' => App_Model_Order::PUSH_STATUS_NO,
-            'paymentMethod' => App_Model_Order::PAYMENT_METHOD_CASH
+            'paymentMethod' => $paymentMethod
         ]);
         $order->save();
     }

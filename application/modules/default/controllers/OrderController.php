@@ -18,6 +18,7 @@ class OrderController extends Default_Controller_Base
         if ($this->getRequest()->isPost()) {
             $this->orderService->createOrder(
                $this->getParam('order', null),
+                $this->getParam('paymentMethod', null),
                 $this->table
             );
         }

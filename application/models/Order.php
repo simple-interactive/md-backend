@@ -7,6 +7,7 @@
  * @property integer $createdDate
  * @property string  $status
  * @property string  $payStatus
+ * @property string  $paymentMethod
  * @property string  $tableId
  * @property string  $isPushed
  * @property string  $price
