@@ -14,7 +14,7 @@ class App_Service_Order
         $payStatus = App_Model_Order::PAY_STATUS_NO;
 
         if ($paymentMethod === App_Model_Order::PAYMENT_METHOD_CARD) {
-            $payStatus = App_Model_Order::STATUS_SUCCESS;
+            $payStatus = App_Model_Order::PAY_STATUS_YES;
         }
 
         foreach ($data as &$item) {
