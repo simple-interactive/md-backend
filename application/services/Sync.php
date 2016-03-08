@@ -151,7 +151,9 @@ class App_Service_Sync {
     private function _removeImages($images)
     {
         foreach ($images as $image) {
-            unlink(APPLICATION_PATH.'/../public/images/'.$image['name']);
+            if (file_exists(APPLICATION_PATH.'/../public/images/'.$image['name'])) {
+                unlink(APPLICATION_PATH.'/../public/images/'.$image['name']);
+            }
         }
     }
 
