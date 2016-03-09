@@ -221,13 +221,14 @@ class App_Service_Sync {
             $style->id = new MongoId($data['id']);
             $style->colors = $data['colors'];
             
-            $style->backgroundImage = $data['backgroundImage'];
+            $backgroundImage = $data['backgroundImage'];
             
             $client = new Zend_Http_Client($data['backgroundImage']['url']);
             $result = $client->request('GET');
             file_put_contents(APPLICATION_PATH.'/../public/images/'.$data['id'], $result->getBody());
-            $style->backgroundImage['url'] = $this->_host.'/images/'.$data['id'];
-                    
+            $backgroundImage['url'] = $this->_host.'/images/'.$data['id'];
+            
+            $style->backgroundImage = $backgroundImage;
     
             $style->company =  $data['company'];
             $style->save();
