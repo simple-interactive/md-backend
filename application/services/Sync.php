@@ -223,7 +223,7 @@ class App_Service_Sync {
             
             $style->backgroundImage = $data['backgroundImage'];
             
-            $client = new Zend_Http_Client($data['backgroundImage']);
+            $client = new Zend_Http_Client($data['backgroundImage']['url']);
             $result = $client->request('GET');
             file_put_contents(APPLICATION_PATH.'/../public/images/'.$data['id'], $result->getBody());
             $style->backgroundImage['url'] = $this->_host.'/images/'.$data['id'];
