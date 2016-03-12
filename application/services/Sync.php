@@ -152,7 +152,9 @@ class App_Service_Sync {
     private function _removeImages($images)
     {
         foreach ($images as $image) {
-            unlink(APPLICATION_PATH.'/../public/images/'.$image['name']);
+            if (!empty($image['name']) && file_exists(APPLICATION_PATH.'/../public/images/'.$image['name'])) {
+                unlink(APPLICATION_PATH.'/../public/images/'.$image['name']);
+            }
         }
     }
 
@@ -219,7 +221,16 @@ class App_Service_Sync {
             }
             $style->id = new MongoId($data['id']);
             $style->colors = $data['colors'];
-            $style->backgroundImage = $data['backgroundImage'];
+            
+            $backgroundImage = $data['backgroundImage'];
+            
+            $client = new Zend_Http_Client($data['backgroundImage']['url']);
+            $result = $client->request('GET');
+            file_put_contents(APPLICATION_PATH.'/../public/images/'.$data['id'], $result->getBody());
+            $backgroundImage['url'] = $this->_host.'/images/'.$data['id'];
+            
+            $style->backgroundImage = $backgroundImage;
+    
             $style->company =  $data['company'];
             $style->save();
 
