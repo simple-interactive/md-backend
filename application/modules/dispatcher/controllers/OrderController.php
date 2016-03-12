@@ -15,6 +15,7 @@ class Dispatcher_OrderController extends Dispatcher_Controller_Base
 
     public function listAction()
     {
+
       $this->view->orders = App_Map_Order::execute(
           App_Model_Order::fetchAll([
               '$or' => [

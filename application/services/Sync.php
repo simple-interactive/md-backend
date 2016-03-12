@@ -74,6 +74,7 @@ class App_Service_Sync {
             $this->_uploadSections($data['sections']);
             $this->_uploadStyle($data['style']);
             $this->_uploadSearch($data['search']);
+            $this->_uploadIngredients($data['ingredients']);
 
             $settings = App_Model_Settings::fetchObject();
             $settings->data = $data ['settings'] ['data'];
@@ -253,6 +254,32 @@ class App_Service_Sync {
     }
 
     /**
+     * @param array $ingredients
+     */
+    private function _uploadIngredients(array $ingredients)
+    {
+        $ids = [];
+        foreach ($ingredients as $item) {
+            $ids [] = $item['id'];
+            if ($this->_isChanged($item, $item['id'], 'Ingredients')) {
+                $ingredient = App_Model_Ingredient::fetchOne([
+                    'id' => $item ['id']
+                ]);
+                if (!$ingredient) {
+                    $ingredient = new App_Model_Ingredient();
+                }
+
+                $ingredient->id = new \MongoId($item['id']);
+                $ingredient->title = $item['title'];
+                $ingredient->save();
+            }
+        }
+        App_Model_Ingredient::remove([
+            'id' => ['$nin' => $ids]
+        ]);
+    }
+
+    /**
      * @param array $data
      * @param string $id
      * @param string $type
@@ -290,6 +317,9 @@ class App_Service_Sync {
             'isPushed' => App_Model_Order::PAY_STATUS_NO
         ]);
 
+        if (count($orders) == 0)
+            return;
+
         $data = [];
         foreach ($orders as $order) {
             $data [] = $order->asArray();
@@ -297,7 +327,6 @@ class App_Service_Sync {
 
         // Push orders
         $client = $this->_createClient(self::CRM_PUST_ORDER);
-        echo $client->getUri(true).PHP_EOL;
         $client->setParameterPost([
             'orders' => $data
         ]);

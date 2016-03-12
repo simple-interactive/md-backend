@@ -6,83 +6,47 @@
 class App_Service_Statistics
 {
 
-    public function getOrders(
-        $timeStart,
-        $timeEnd,
-        $offset = 0,
-        $count = 10,
-        App_Model_Section $section = null,
-        $status,
-        $paymentMethod
-    )
+    public function putIntoStatistics(App_Model_Product $product, App_Model_Order $order, $count)
     {
-        if ($timeStart >= $timeEnd) {
-            throw new \Exception('time-invalid', 400);
+        $data = $product->asArray();
+        unset($data['id']);
+        for($i = 0; $i < $count; $i ++) {
+            $stproduct = new App_Model_STProduct($data);
+            $stproduct->orderId = (string) $order->id;
+            $stproduct->productId = (string) $product->id;
+            $stproduct->createdAt = new \MongoDate();
+            $stproduct->save();
         }
 
-        $cond = [
-            'createdDate' => [
-                '$gte' => (int) $timeStart,
-                '$lte' => (int) $timeEnd
-            ]
-        ];
-
-        if ($section) {
-            $ids = $this->_getSectionIds([], (string) $section->id);
-            $cond ['data.product.section.id'] = [
-                '$in' => $ids
-            ];
+        if (!App_Model_STSection::fetchOne([
+            'sectionId' => $product->sectionId
+        ])) {
+            $stsection = new App_Model_STSection();
+            $section = App_Model_Section::fetchOne([
+                'id' => new \MongoId($product->sectionId)
+            ]);
+            $stsection->sectionId = $product->sectionId;
+            $stsection->title = $section->title;
+            $stsection->parentId = $section->parentId;
+            $stsection->save();
         }
 
-        if ($status) {
-            $cond['status'] = $status;
-        }
+        if (isset($product->ingredients) && count($product->ingredients) > 0)
+            foreach ($product->ingredients as $ingredient) {
+                $ingredient = App_Model_Ingredient::fetchOne([
+                    'id' => new \MongoId($ingredient['ingredient']['id'])
+                ]);
+                $stIngredient = App_Model_STIngredient::fetchOne([
+                    'ingredientId' => (string) $ingredient->id
+                ]);
+                if (!$stIngredient) {
+                    $stIngredient = new App_Model_STIngredient([
+                        'ingredientId' => (string) $ingredient->id,
+                        'title' => $ingredient->title
+                    ]);
+                    $stIngredient->save();
+                }
+            }
 
-        if ($paymentMethod) {
-            $cond['paymentMethod'] = $paymentMethod;
-        }
-        
-        $orders = App_Model_Order::fetchAll(
-            $cond,
-            [
-                'createdDate' => 1
-            ],
-            (int) $count,
-            (int) $offset
-        );
-        return $orders;
     }
-
-    public function getCountOrders(
-        $timeStart,
-        $timeEnd
-    )
-    {
-        return $orders = App_Model_Order::getCount([
-            'createdDate' => [
-                '$gte' => (int) $timeStart,
-                '$lte' => (int) $timeEnd
-            ]
-        ]);
-    }
-
-    private function _getSectionIds(array $ids, $sectionId)
-    {
-        $ids [] = $sectionId;
-
-        $sections = App_Model_Section::fetchAll([
-                'parentId' => $sectionId
-        ]);
-
-        if ( ! $sections) {
-            return $ids;
-        }
-
-        foreach ($sections as $section) {
-            $ids = $this->_getSectionIds($ids, (string) $section->id);
-        }
-
-        return $ids;
-    }
-
 }

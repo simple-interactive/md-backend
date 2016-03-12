@@ -16,7 +16,7 @@ class OrderController extends Default_Controller_Base
     public function indexAction()
     {
         if ($this->getRequest()->isPost()) {
-            $this->orderService->createOrder(
+            $order = $this->orderService->createOrder(
                $this->getParam('order', null),
                 $this->getParam('paymentMethod', null),
                 $this->table
