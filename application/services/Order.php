@@ -39,6 +39,9 @@ class App_Service_Order
             $service->putIntoStatistics($product, $order, $item['amount']);
             $item ['product'] = App_Map_Product::execute($product);
         }
+        
+        $order->data = $data;
+        $order->save();
 
         return $order;
     }
