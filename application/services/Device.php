@@ -81,7 +81,7 @@ class App_Service_Device
         return App_Model_Table::fetchAll([
             'pair' => App_Model_Table::PAIR_YES,
             'status' => App_Model_Table::STATUS_ACTIVE,
-        ]);
+        ], ['name' => -1]);
     }
 
     /**
