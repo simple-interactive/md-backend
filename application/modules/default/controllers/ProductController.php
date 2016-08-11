@@ -40,7 +40,7 @@ class ProductController extends Default_Controller_Base
         $this->view->products = App_Map_Product::execute($this->getMenuService()->getProductListBySection(
                 App_Model_Section::fetchOne(['id' => $this->getParam('sectionId',  false)]),
                 $this->getParam('offset', 0),
-                $this->getParam('limit', 10)
+                $this->getParam('limit', 10000)
             )
         );
         $this->view->count = $this->getMenuService()->getProductCountBySection(
